@@ -22,7 +22,6 @@ func NewConsumer(host, port string, groupID string) (*Consumer, error) {
 	config := sarama.NewConfig()
 	config.Version = sarama.V2_8_0_0
 	config.Consumer.Return.Errors = true
-	config.Consumer.Offsets.Initial = sarama.OffsetOldest
 
 	group, err := sarama.NewConsumerGroup([]string{fmt.Sprintf("%s:%s", host, port)}, groupID, config)
 	if err != nil {
