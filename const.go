@@ -6,6 +6,7 @@ const (
 )
 
 const (
-	AccountServiceGroupID = "account-service"
-	AuthServiceGroupID    = "account-service"
+	AccountServiceGroupID      = "account-service"
+	AuthServiceGroupID         = "auth-service"
+	NotificationServiceGroupID = "notification-service"
 )
