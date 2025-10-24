@@ -17,7 +17,7 @@ const (
 	TopicAccountActivity = "account_activity_topic"
 )
 
-func NewProducer(host string, port int) (*Producer, error) {
+func NewProducer(host, port string) (*Producer, error) {
 	cfg := sarama.NewConfig()
 	cfg.Producer.Return.Successes = true
 	cfg.Producer.RequiredAcks = sarama.WaitForAll
