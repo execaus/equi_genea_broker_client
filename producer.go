@@ -17,7 +17,7 @@ const (
 	TopicAccountActivity = "account_activity_topic"
 )
 
-func New(host string, port int) *Producer {
+func New(host string, port int) (*Producer, error) {
 	cfg := sarama.NewConfig()
 	cfg.Producer.Return.Successes = true
 	cfg.Producer.RequiredAcks = sarama.WaitForAll
@@ -27,29 +27,28 @@ func New(host string, port int) *Producer {
 
 	producer, err := sarama.NewSyncProducer([]string{brokerAddr}, cfg)
 	if err != nil {
-		log.Fatalf("Ошибка при создании продюсера: %v", err)
+		return nil, fmt.Errorf("failed to create producer: %w", err)
 	}
-
-	return &Producer{producer: producer}
+	return &Producer{producer: producer}, nil
 }
 
-func (p *Producer) SendAccountCreation(event AccountCreationEvent) {
+func (p *Producer) SendAccountCreation(event AccountCreationEvent) error {
 	data, err := json.Marshal(event)
 	if err != nil {
-		log.Fatalf("Ошибка сериализации AccountCreationEvent: %v", err)
+		return fmt.Errorf("failed to marshal AccountCreationEvent: %w", err)
 	}
-	p.sendToTopic(TopicAccountCreation, data)
+	return p.sendToTopic(TopicAccountCreation, data)
 }
 
-func (p *Producer) SendAccountActivity(event AccountActivityEvent) {
+func (p *Producer) SendAccountActivity(event AccountActivityEvent) error {
 	data, err := json.Marshal(event)
 	if err != nil {
-		log.Fatalf("Ошибка сериализации AccountActivityEvent: %v", err)
+		return fmt.Errorf("failed to marshal AccountActivityEvent: %w", err)
 	}
-	p.sendToTopic(TopicAccountActivity, data)
+	return p.sendToTopic(TopicAccountActivity, data)
 }
 
-func (p *Producer) sendToTopic(topic string, data []byte) {
+func (p *Producer) sendToTopic(topic string, data []byte) error {
 	msg := &sarama.ProducerMessage{
 		Topic: topic,
 		Value: sarama.ByteEncoder(data),
@@ -57,15 +56,13 @@ func (p *Producer) sendToTopic(topic string, data []byte) {
 
 	partition, offset, err := p.producer.SendMessage(msg)
 	if err != nil {
-		log.Fatalf("Ошибка при отправке сообщения: %v", err)
+		return fmt.Errorf("failed to send message to topic %s: %w", topic, err)
 	}
 
 	log.Printf("Сообщение отправлено в %s [partition=%d, offset=%d]", topic, partition, offset)
+	return nil
 }
 
-// Close закрывает соединение с брокером.
-func (p *Producer) Close() {
-	if err := p.producer.Close(); err != nil {
-		log.Printf("Ошибка при закрытии продюсера: %v", err)
-	}
+func (p *Producer) Close() error {
+	return p.producer.Close()
 }
