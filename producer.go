@@ -1,4 +1,4 @@
-package equi_genea_broker_producer
+package equi_genea_broker_client
 
 import (
 	"encoding/json"
