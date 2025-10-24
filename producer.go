@@ -32,7 +32,7 @@ func NewProducer(host, port string) (*Producer, error) {
 	return &Producer{producer: producer}, nil
 }
 
-func (p *Producer) SendAccountCreation(event AccountCreationEvent) error {
+func (p *Producer) SendAccountCreation(event *AccountCreationEvent) error {
 	data, err := json.Marshal(event)
 	if err != nil {
 		return fmt.Errorf("failed to marshal AccountCreationEvent: %w", err)
@@ -40,7 +40,7 @@ func (p *Producer) SendAccountCreation(event AccountCreationEvent) error {
 	return p.sendToTopic(TopicAccountCreation, data)
 }
 
-func (p *Producer) SendAccountActivity(event AccountActivityEvent) error {
+func (p *Producer) SendAccountActivity(event *AccountActivityEvent) error {
 	data, err := json.Marshal(event)
 	if err != nil {
 		return fmt.Errorf("failed to marshal AccountActivityEvent: %w", err)
