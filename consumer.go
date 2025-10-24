@@ -18,7 +18,11 @@ type Consumer struct {
 	closeOnce            sync.Once
 }
 
-func NewConsumer(host, port string, groupID string, config *sarama.Config) (*Consumer, error) {
+func NewConsumer(host, port string, groupID string) (*Consumer, error) {
+	config := sarama.NewConfig()
+	config.Version = sarama.V2_8_0_0
+	config.Consumer.Return.Errors = true
+
 	group, err := sarama.NewConsumerGroup([]string{fmt.Sprintf("%s:%s", host, port)}, groupID, config)
 	if err != nil {
 		return nil, err
