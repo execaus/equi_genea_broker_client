@@ -23,7 +23,7 @@ func NewProducer(host, port string) (*Producer, error) {
 	cfg.Producer.RequiredAcks = sarama.WaitForAll
 	cfg.Producer.Retry.Max = 5
 
-	brokerAddr := fmt.Sprintf("%s:%d", host, port)
+	brokerAddr := fmt.Sprintf("%s:%s", host, port)
 
 	producer, err := sarama.NewSyncProducer([]string{brokerAddr}, cfg)
 	if err != nil {
