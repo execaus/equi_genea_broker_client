@@ -1,8 +1,8 @@
 package equi_genea_broker_client
 
 type AccountCreationEvent struct {
-	AccountID string
-	Password  string
+	Email    string
+	Password string
 }
 
 type AccountActivityEvent struct {
