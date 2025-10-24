@@ -12,11 +12,6 @@ type Producer struct {
 	producer sarama.SyncProducer
 }
 
-const (
-	TopicAccountCreation = "account_creation_topic"
-	TopicAccountActivity = "account_activity_topic"
-)
-
 func NewProducer(host, port string) (*Producer, error) {
 	cfg := sarama.NewConfig()
 	cfg.Producer.Return.Successes = true
